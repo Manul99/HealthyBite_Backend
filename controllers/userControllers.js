@@ -301,7 +301,31 @@ const deleteAccount = asyncHandler(async(req,res) =>{
     }
 });
 
+const getAllUsers = asyncHandler(async(req,res) =>{
+    try {
+        const users = await User.find();
+        res.status(200).json(users);
+    } catch (error) {
+        console.error('Failed load users',error);
+        res.status(500).json({message:'Internal server error'});
+    }
 
+});
 
+const getUserById = asyncHandler(async(req,res) =>{
+    try {
+    const userId = req.user.id;
+    const user = await User.findById(userId);
 
-module.exports = {register,login,updateUser,requestPasswordResetWithOTP,verifyOTPAndPassword,updatePassword,deleteAccount};
+    if(!user){
+        return res.status(404).json({message:'User not found'});
+    }
+    res.status(200).json(user);
+    } catch (error) {
+        console.error('Failed to get user');
+        res.status(500).json({message:'Internal server error'});
+    }
+
+})
+
+module.exports = {register,login,updateUser,requestPasswordResetWithOTP,verifyOTPAndPassword,updatePassword,deleteAccount,getAllUsers,getUserById};

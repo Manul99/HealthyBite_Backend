@@ -109,7 +109,31 @@ const getPlan = asyncHandler(async(req,res) =>{
         return res.json({type:'exercise',plan});
     }
     res.status(400),json({message:'Invalid type'});
-}) 
+});
+
+const getFitnessAssetsById = asyncHandler(async (req, res) => {
+    try {
+      const userId = req.user.id;
+      const assessment = await FitnessAssetment.findOne({userId});
+      if (!assessment) {
+        return res.status(404).json({ message: 'No assessment found' });
+      }
+      res.status(200).json(assessment);
+    } catch (error) {
+      console.error('Failed to fetch assessment:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+const getAllFitnessAssets = asyncHandler(async (req, res) => {
+    try {
+      const assessments = await FitnessAssetment.find();
+      res.status(200).json(assessments);
+    } catch (error) {
+      console.error('Failed to fetch assessments:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+})
 
 
-module.exports = {createAssessment, getLatestAssetment, getPlan};
+module.exports = {createAssessment, getLatestAssetment, getPlan, getFitnessAssetsById, getAllFitnessAssets};
